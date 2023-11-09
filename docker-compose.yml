@@ -1,0 +1,29 @@
+version: '3'
+services:
+    phpmyadmin-5.2:
+        networks:
+            - vi-web
+        ports:
+            - '8081:80'
+            - '8899:443'
+        container_name: phpmyadmin-5.2
+        restart: always
+        environment:
+            - PMA_ARBITRARY=1
+            - UPLOAD_LIMIT=300M
+        volumes:
+            - "./config/phpmyadmin/config.user.inc.php:/etc/phpmyadmin/config.user.inc.php"
+            - "./config/apache2/sites-available/000-default.conf:/etc/apache2/sites-available/000-default.conf"
+        image: phpmyadmin-img:1.0.0
+        labels:
+            - "traefik.enable=false"
+        external_links: 
+            - mysql:mysql-8.0
+        deploy:
+            resources:
+                limits:
+                    cpus: '1'
+                    memory: 512M
+networks:
+    vi-web:
+        external: true
